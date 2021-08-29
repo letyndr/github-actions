@@ -1,6 +1,24 @@
 name: Tests
 on: [push]
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Installing dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort autoflake
+      - name: Executing black
+        run: black . --check --line-length 80
+      - name: Executing isort
+        run: isort . --check-only
+      - name: Executing autoflake
+        run: autoflake --recursive --exclude .venv --check --expand-star-imports --remove-all-unused-imports --remove-unused-variables ./
   tests:
     runs-on: ubuntu-latest
     steps:
